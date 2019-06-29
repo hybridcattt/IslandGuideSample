@@ -8,19 +8,19 @@
 
 import Foundation
 
-struct Spot {
+struct Spot: Hashable {
     let id: UUID = UUID()
     let title: String
     let imageName: String
 }
 
-struct Activity {
+struct Activity: Hashable {
     let id: UUID = UUID()
     let title: String
     let description: String
 }
 
-struct Seal {
+struct Seal: Hashable {
     let id: UUID = UUID()
     let name: String
     let imageName: String

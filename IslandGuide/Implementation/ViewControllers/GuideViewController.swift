@@ -19,6 +19,7 @@ class GuideViewController: UIViewController {
     }
     
     private(set) var collectionView: UICollectionView!
+    private(set) var dataSource: UICollectionViewDiffableDataSource<GuideSection, UUID>! // retain data source!
 
     private(set) var appData: AppData = AppData()
     
@@ -38,7 +39,7 @@ class GuideViewController: UIViewController {
     
     @IBAction func shuffleButtonPressed(_ sender: Any) {
         appData.cuteSeals.shuffle()
-        collectionView.reloadData()
+        collectionView.reloadData() // still works!
     }
     
     @IBAction func aButtonPressed(_ sender: Any) {
@@ -47,50 +48,47 @@ class GuideViewController: UIViewController {
 
 // MARK: - Collection View DataSource -
 
-extension GuideViewController: UICollectionViewDataSource {
-    
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return GuideSection.allCases.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+private extension GuideViewController {
+
+    func configureDiffableDataSource() {
         
-        guard let guideSection = GuideSection(rawValue: section) else {
-            fatalError("Unexpected section \(section)")
-        }
-        
-        switch guideSection {
-        case .coolSpots:
-            return appData.coolSpots.count
-        case .funActivities:
-            return appData.funActivities.count
-        case .cuteSeals:
-            return appData.cuteSeals.count
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        guard let guideSection = GuideSection(rawValue: indexPath.section) else {
-            fatalError("Unexpected section in index path \(indexPath)")
-        }
-        
-        switch guideSection {
-        case .coolSpots:
-            let cell = collectionView.dequeueCell(ofType: CoolSpotCollectionViewCell.self, for: indexPath)
-            cell.fillWithData(appData.coolSpots[indexPath.row])
-            return cell
+        let dataSource = UICollectionViewDiffableDataSource<GuideSection, UUID>(collectionView: collectionView) { [weak self] (collectionView: UICollectionView, indexPath: IndexPath, identifier: UUID) -> UICollectionViewCell? in
+
+            guard let sself = self else {
+                return nil // what to do? crash!
+            }
             
-        case .funActivities:
-            let cell = collectionView.dequeueCell(ofType: FunActivityCollectionViewCell.self, for: indexPath)
-            cell.fillWithData(appData.funActivities[indexPath.row])
-            return cell
+            guard let guideSection = GuideSection(rawValue: indexPath.section) else {
+                fatalError("Unexpected section in index path \(indexPath)")
+            }
             
-        case .cuteSeals:
-            let cell = collectionView.dequeueCell(ofType: CuteSealCollectionViewCell.self, for: indexPath)
-            cell.fillWithData(appData.cuteSeals[indexPath.row])
-            return cell
+            switch guideSection {
+            case .coolSpots:
+                let cell = collectionView.dequeueCell(ofType: CoolSpotCollectionViewCell.self, for: indexPath)
+                cell.fillWithData(sself.appData.coolSpots[indexPath.row])
+                return cell
+                
+            case .funActivities:
+                let cell = collectionView.dequeueCell(ofType: FunActivityCollectionViewCell.self, for: indexPath)
+                cell.fillWithData(sself.appData.funActivities[indexPath.row])
+                return cell
+                
+            case .cuteSeals:
+                let cell = collectionView.dequeueCell(ofType: CuteSealCollectionViewCell.self, for: indexPath)
+                cell.fillWithData(sself.appData.cuteSeals[indexPath.row])
+                return cell
+            }
         }
+        
+        self.dataSource = dataSource
+
+        let snapshot = NSDiffableDataSourceSnapshot<GuideSection, UUID>()
+
+        snapshot.appendSections(GuideSection.allCases)
+        snapshot.appendItems(appData.coolSpots.map({ $0.id }), toSection: .coolSpots)
+        snapshot.appendItems(appData.funActivities.map({ $0.id }), toSection: .funActivities)
+        snapshot.appendItems(appData.cuteSeals.map({ $0.id }), toSection: .cuteSeals)
+        dataSource.apply(snapshot)
     }
 }
 
@@ -170,7 +168,7 @@ private extension GuideViewController {
         collectionView.registerCell(ofType: FunActivityCollectionViewCell.self)
         collectionView.registerCell(ofType: CuteSealCollectionViewCell.self)
         
-        collectionView.dataSource = self
-        collectionView.delegate = self
+        collectionView.delegate = self // Set delegate before data source !!
+        configureDiffableDataSource()
     }
 }

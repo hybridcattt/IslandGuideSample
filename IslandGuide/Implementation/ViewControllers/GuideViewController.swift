@@ -39,13 +39,6 @@ class GuideViewController: UIViewController {
         configureCollectionView()
     }
     
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        
-        collectionView.collectionViewLayout.invalidateLayout()
-        collectionView.layoutIfNeeded()
-    }
-    
     @IBAction func shuffleButtonPressed(_ sender: Any) {
         appData.cuteSeals.shuffle()
         updateSnapshot()
@@ -85,10 +78,10 @@ private extension GuideViewController {
         
         self.dataSource = dataSource
 
-        updateSnapshot()
+        updateSnapshot(animated: false)
     }
     
-    func updateSnapshot() {
+    func updateSnapshot(animated: Bool = true) {
         
         let snapshot = NSDiffableDataSourceSnapshot<GuideSection, GuideItem>()
 
@@ -105,46 +98,46 @@ private extension GuideViewController {
         
         shownSections = snapshot.sectionIdentifiers
         
-        dataSource.apply(snapshot)
+        dataSource.apply(snapshot, animatingDifferences: animated)
     }
 }
 
 // MARK: - Collection View Layout -
 
 private extension GuideViewController {
-    
-    func makeCollectionViewLayout() -> UICollectionViewLayout {
+
+    func makeCompositionalLayout() -> UICollectionViewLayout {
+        let section = makeSectionDeclaration()
+        let configuration = UICollectionViewCompositionalLayoutConfiguration()
+        configuration.interSectionSpacing = 20
         
-        let flowLayout = UICollectionViewFlowLayout()
-        flowLayout.minimumLineSpacing = 10
-        flowLayout.sectionInset = UIEdgeInsets(top: 20, left: 10, bottom: 20, right: 10)
-        flowLayout.minimumInteritemSpacing = 10
-        return flowLayout
+        let layout = UICollectionViewCompositionalLayout(section: section, configuration: configuration)
+        return layout
+    }
+    
+    func makeSectionDeclaration() -> NSCollectionLayoutSection {
+        
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                              heightDimension: .fractionalHeight(1.0))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                               heightDimension: .absolute(100))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 2)
+        
+        group.interItemSpacing = NSCollectionLayoutSpacing.fixed(10)
+        
+        let section = NSCollectionLayoutSection(group: group)
+        section.interGroupSpacing = 10
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
+        
+        return section
     }
 }
 
 // MARK: - Collection View Delegate -
 
-extension GuideViewController: UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
-        let guideSection = shownSections[indexPath.section]
-        
-        guard let flowLayout = collectionViewLayout as? UICollectionViewFlowLayout else {
-            fatalError("Wrong layout, got \(collectionViewLayout)")
-        }
-
-        let width = (collectionView.bounds.size.width - flowLayout.sectionInset.left - flowLayout.sectionInset.right - flowLayout.minimumInteritemSpacing) / 2
-        switch guideSection {
-        case .coolSpots:
-            return CGSize(width: width, height: 50)
-        case .funActivities:
-            return CGSize(width: width, height: 130)
-        case .cuteSeals:
-            return CGSize(width: width, height: 70)
-        }
-    }
+extension GuideViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         cell.contentView.backgroundColor = UIColor.systemGray6
@@ -161,7 +154,7 @@ private extension GuideViewController {
     
     func addCollectionView() {
         
-        let layout = makeCollectionViewLayout()
+        let layout = makeCompositionalLayout()
         
         collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .systemBackground

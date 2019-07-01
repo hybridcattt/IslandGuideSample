@@ -29,6 +29,8 @@ class GuideViewController: UIViewController {
 
     private(set) var appData: AppData = AppData()
     
+    private var showActivities: Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -49,6 +51,8 @@ class GuideViewController: UIViewController {
     }
     
     @IBAction func aButtonPressed(_ sender: Any) {
+        showActivities.toggle()
+        updateSnapshot()
     }
 }
 
@@ -87,10 +91,17 @@ private extension GuideViewController {
         
         let snapshot = NSDiffableDataSourceSnapshot<GuideSection, GuideItem>()
 
-        snapshot.appendSections(GuideSection.allCases)
-        snapshot.appendItems(appData.coolSpots.map({ GuideItem.coolSpot($0) }), toSection: .coolSpots)
-        snapshot.appendItems(appData.funActivities.map({ GuideItem.funActivity($0) }), toSection: .funActivities)
-        snapshot.appendItems(appData.cuteSeals.map({ GuideItem.cuteSeal($0) }), toSection: .cuteSeals)
+        snapshot.appendSections([.coolSpots])
+        snapshot.appendItems(appData.coolSpots.map({ GuideItem.coolSpot($0) }))
+        
+        if showActivities {
+            snapshot.appendSections([.funActivities])
+            snapshot.appendItems(appData.funActivities.map({ GuideItem.funActivity($0) }))
+        }
+        
+        snapshot.appendSections([.cuteSeals])
+        snapshot.appendItems(appData.cuteSeals.map({ GuideItem.cuteSeal($0) }))
+        
         dataSource.apply(snapshot)
     }
 }

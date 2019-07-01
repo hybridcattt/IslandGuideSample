@@ -107,15 +107,36 @@ private extension GuideViewController {
 private extension GuideViewController {
 
     func makeCompositionalLayout() -> UICollectionViewLayout {
-        let section = makeSectionDeclaration()
         let configuration = UICollectionViewCompositionalLayoutConfiguration()
         configuration.interSectionSpacing = 20
         
-        let layout = UICollectionViewCompositionalLayout(section: section, configuration: configuration)
+        let layout = UICollectionViewCompositionalLayout(sectionProvider: { [weak self] (sectionIndex: Int, environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
+            
+            guard let sself = self else {
+                return nil
+            }
+            
+            let guideSection = sself.shownSections[sectionIndex]
+            
+            let section: NSCollectionLayoutSection
+            switch guideSection {
+            case .coolSpots:
+                section = sself.makeSpotsSectionDeclaration()
+            case .funActivities:
+                section = sself.makeActivitiesSectionDeclaration()
+            case .cuteSeals:
+                section = sself.makeSealsSectionDeclaration()
+            }
+            
+            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
+            return section
+            
+        }, configuration: configuration)
+        
         return layout
     }
     
-    func makeSectionDeclaration() -> NSCollectionLayoutSection {
+    func makeSpotsSectionDeclaration() -> NSCollectionLayoutSection {
         
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                               heightDimension: .fractionalHeight(1.0))
@@ -129,7 +150,44 @@ private extension GuideViewController {
         
         let section = NSCollectionLayoutSection(group: group)
         section.interGroupSpacing = 10
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
+
+        return section
+    }
+    
+    func makeActivitiesSectionDeclaration() -> NSCollectionLayoutSection {
+        
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                              heightDimension: .fractionalHeight(1.0))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                               heightDimension: .absolute(100))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 2)
+        
+        group.interItemSpacing = NSCollectionLayoutSpacing.fixed(10)
+        
+        let section = NSCollectionLayoutSection(group: group)
+        section.interGroupSpacing = 10
+
+        return section
+    }
+    
+    func makeSealsSectionDeclaration() -> NSCollectionLayoutSection {
+        
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                              heightDimension: .fractionalHeight(1.0))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        
+        let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(150),
+                                               heightDimension: .absolute(200))
+        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitem: item, count: 3)
+        
+        group.interItemSpacing = NSCollectionLayoutSpacing.fixed(10)
+        
+        let section = NSCollectionLayoutSection(group: group)
+        section.interGroupSpacing = 10
+        
+        section.orthogonalScrollingBehavior = .continuousGroupLeadingBoundary
         
         return section
     }

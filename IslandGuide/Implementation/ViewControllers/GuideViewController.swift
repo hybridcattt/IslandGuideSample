@@ -39,7 +39,7 @@ class GuideViewController: UIViewController {
     
     @IBAction func shuffleButtonPressed(_ sender: Any) {
         appData.cuteSeals.shuffle()
-        collectionView.reloadData() // still works!
+        updateSnapshot()
     }
     
     @IBAction func aButtonPressed(_ sender: Any) {
@@ -82,6 +82,11 @@ private extension GuideViewController {
         
         self.dataSource = dataSource
 
+        updateSnapshot()
+    }
+    
+    func updateSnapshot() {
+        
         let snapshot = NSDiffableDataSourceSnapshot<GuideSection, UUID>()
 
         snapshot.appendSections(GuideSection.allCases)

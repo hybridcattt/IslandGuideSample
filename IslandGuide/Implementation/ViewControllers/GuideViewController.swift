@@ -12,10 +12,10 @@ import UIKit
 
 class GuideViewController: UIViewController {
 
-    enum GuideSection: Int, CaseIterable {
-        case coolSpots = 0
-        case funActivities = 1
-        case cuteSeals = 2
+    enum GuideSection: CaseIterable {
+        case coolSpots
+        case funActivities
+        case cuteSeals
     }
     
     enum GuideItem: Hashable {
@@ -30,6 +30,7 @@ class GuideViewController: UIViewController {
     private(set) var appData: AppData = AppData()
     
     private var showActivities: Bool = false
+    private var shownSections: [GuideSection] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -102,6 +103,8 @@ private extension GuideViewController {
         snapshot.appendSections([.cuteSeals])
         snapshot.appendItems(appData.cuteSeals.map({ GuideItem.cuteSeal($0) }))
         
+        shownSections = snapshot.sectionIdentifiers
+        
         dataSource.apply(snapshot)
     }
 }
@@ -126,10 +129,8 @@ extension GuideViewController: UICollectionViewDelegate, UICollectionViewDelegat
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        guard let guideSection = GuideSection(rawValue: indexPath.section) else {
-            fatalError("Unexpected section in index path \(indexPath)")
-        }
-
+        let guideSection = shownSections[indexPath.section]
+        
         guard let flowLayout = collectionViewLayout as? UICollectionViewFlowLayout else {
             fatalError("Wrong layout, got \(collectionViewLayout)")
         }

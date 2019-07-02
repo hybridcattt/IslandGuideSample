@@ -28,12 +28,20 @@ struct AppData {
         return [
             Activity(title: "Biking",
                      description: "Biking is the best activity you can find. It's fun, it's sporty, and you can look kind of cool on a bike"),
+            Activity(title: "SwiftIsland",
+                     description: "This is a special one...."),
+            Activity(title: "Running around",
+                     description: "Running is not for everyone. But if it's for you, you're in luck! It's still slow enough so you can look around at the nature around"),
+            Activity(title: "Petting the seals",
+                     description: "Do you dare to do it? Is it even dangerous? Let's find out together!"),
+            Activity(title: "Biking",
+                     description: "Biking is the best activity you can find. It's fun, it's sporty, and you can look kind of cool on a bike"),
             Activity(title: "Running around",
                      description: "Running is not for everyone. But if it's for you, you're in luck! It's still slow enough so you can look around at the nature around"),
             Activity(title: "SwiftIsland",
                      description: "This is a special one...."),
-            Activity(title: "Petting the seals",
-                     description: "Do you dare to do it? Is it even dangerous? Let's find out together!"),
+            Activity(title: "Biking",
+                     description: "Biking is the best activity you can find. It's fun, it's sporty, and you can look kind of cool on a bike"),
         ]
     }()
     

@@ -24,6 +24,11 @@ class GuideViewController: UIViewController {
         case cuteSeal(Seal)
     }
     
+    enum SupplementaryItemKind: String {
+        case star
+        case checkmark
+    }
+    
     private(set) var collectionView: UICollectionView!
     private(set) var dataSource: UICollectionViewDiffableDataSource<GuideSection, GuideItem>! // retain data source!
 
@@ -73,6 +78,24 @@ private extension GuideViewController {
                 let cell = collectionView.dequeueCell(ofType: CuteSealCollectionViewCell.self, for: indexPath)
                 cell.fillWithData(seal)
                 return cell
+            }
+        }
+        
+        dataSource.supplementaryViewProvider = { (collectionView: UICollectionView, kind: String, indexPath: IndexPath) -> UICollectionReusableView? in
+            
+            guard let supplementaryItemKind = SupplementaryItemKind(rawValue: kind) else {
+                return nil
+            }
+
+            switch supplementaryItemKind {
+            case .checkmark:
+                let view = collectionView.dequeueReusableView(ofType: CheckmarkSupplementaryView.self, forKind: supplementaryItemKind.rawValue, for: indexPath)
+                view.backgroundColor = .red
+                return view
+            case .star:
+                let view = collectionView.dequeueReusableView(ofType: StarSupplementaryView.self, forKind: supplementaryItemKind.rawValue, for: indexPath)
+                view.backgroundColor = .green
+                return view
             }
         }
         
@@ -138,13 +161,40 @@ private extension GuideViewController {
     
     func makeSpotsSectionDeclaration() -> NSCollectionLayoutSection {
         
+        let supplementaryItemSize = NSCollectionLayoutSize(
+            widthDimension: .absolute(20),
+            heightDimension: .absolute(20)
+        )
+        
+        let leadingSupplementaryItem = NSCollectionLayoutSupplementaryItem(
+            layoutSize: supplementaryItemSize,
+            elementKind: SupplementaryItemKind.checkmark.rawValue,
+            containerAnchor: .init(
+                edges: [.top, .leading],
+                fractionalOffset: CGPoint(x: 0.1, y: 0.1)
+            )
+        )
+        
+        let trailingSupplementaryItem = NSCollectionLayoutSupplementaryItem(
+            layoutSize: supplementaryItemSize,
+            elementKind: SupplementaryItemKind.star.rawValue,
+            containerAnchor: .init(
+                edges: [.top, .trailing],
+                fractionalOffset: CGPoint(x: -0.1, y: 0.1)
+            )
+        )
+        
+        leadingSupplementaryItem.zIndex = 101
+        trailingSupplementaryItem.zIndex = 102
+
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                               heightDimension: .fractionalHeight(1.0))
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+
+        let item = NSCollectionLayoutItem(layoutSize: itemSize, supplementaryItems: [leadingSupplementaryItem, trailingSupplementaryItem])
         
         let largeItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.4),
                                                    heightDimension: .fractionalHeight(1.0))
-        let largeItem = NSCollectionLayoutItem(layoutSize: largeItemSize)
+        let largeItem = NSCollectionLayoutItem(layoutSize: largeItemSize, supplementaryItems: [])
         
         let groupOf2Size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.58),
                                                   heightDimension: .fractionalHeight(1.0))
@@ -249,6 +299,9 @@ private extension GuideViewController {
         collectionView.registerCell(ofType: FunActivityCollectionViewCell.self)
         collectionView.registerCell(ofType: CuteSealCollectionViewCell.self)
         
+        collectionView.registerReusableView(ofType: StarSupplementaryView.self, forKind: SupplementaryItemKind.star.rawValue)
+        collectionView.registerReusableView(ofType: CheckmarkSupplementaryView.self, forKind: SupplementaryItemKind.checkmark.rawValue)
+
         collectionView.delegate = self // Set delegate before data source !!
         configureDiffableDataSource()
     }

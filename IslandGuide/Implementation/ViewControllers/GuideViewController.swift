@@ -142,15 +142,30 @@ private extension GuideViewController {
                                               heightDimension: .fractionalHeight(1.0))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                               heightDimension: .absolute(100))
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 2)
+        let largeItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.4),
+                                                   heightDimension: .fractionalHeight(1.0))
+        let largeItem = NSCollectionLayoutItem(layoutSize: largeItemSize)
+        
+        let groupOf2Size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.58),
+                                                  heightDimension: .fractionalHeight(1.0))
+        let groupOf2 = NSCollectionLayoutGroup.vertical(layoutSize: groupOf2Size, subitem: item, count: 2)
+        groupOf2.interItemSpacing = .fixed(10)
+        
+        let groupOf3Size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                              heightDimension: .fractionalHeight(1.0))
+        let groupOf3 = NSCollectionLayoutGroup.horizontal(layoutSize: groupOf3Size, subitems: [largeItem, groupOf2])
+        groupOf3.interItemSpacing = .flexible(0)
+
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.8),
+                                               heightDimension: .absolute(200))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: groupOf3, count: 1)
         
         group.interItemSpacing = NSCollectionLayoutSpacing.fixed(10)
         
         let section = NSCollectionLayoutSection(group: group)
         section.interGroupSpacing = 10
-
+        section.orthogonalScrollingBehavior = .groupPagingCentered
+        
         return section
     }
     

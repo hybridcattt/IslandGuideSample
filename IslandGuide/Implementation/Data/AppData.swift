@@ -18,6 +18,9 @@ struct AppData {
             Spot(title: "The Bollekamer", imageName: "spot2"),
             Spot(title: "Beach Pavilion Twaalf", imageName: "spot3"),
             Spot(title: "Sommeltjespad", imageName: "spot1"),
+            Spot(title: "The Lighthouse", imageName: "spot4"),
+            Spot(title: "Prince Hendrik", imageName: "spot6"),
+            Spot(title: "Seal sanctuary", imageName: "spot5"),
         ]
     }()
     

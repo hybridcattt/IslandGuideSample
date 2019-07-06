@@ -1,5 +1,5 @@
 # IslandGuideSample
-Demo app for Collection Views workshop @ Swift Island 2019
+Demo app for Collection Views workshop @ [Swift Island 2019](https://swiftisland.nl)
 
 During the workshop will go through refactoring of this app from using
 classic UICollectionViewDataSource and UICollectionViewFlowLayout

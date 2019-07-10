@@ -1,19 +1,21 @@
 # IslandGuideSample
 Demo app for Collection Views workshop @ [Swift Island 2019](https://swiftisland.nl)
 
+Created by [Marina Gornostaeva](https://twitter.com/hybridcattt).
+
 During the workshop will go through refactoring of this app from using
 classic UICollectionViewDataSource and UICollectionViewFlowLayout
 into using the new diffable data source and compositional layout.
 
 ### Part 1: Diffable Data Source
 
-Step 1. Simple data source
-Step 2. Creating and updating data in different ways
+1. Simple data source
+2. Creating and updating data in different ways
 
 ### Part 2: Compositional layout
 
-Step 3. Basic concepts of compositional layout
-Step 4. Trying out nested groups and using estimated height
+3. Basic concepts of compositional layout
+4. Trying out nested groups and using estimated height
 
 ### Optional excercises 
 
@@ -26,6 +28,6 @@ Step 4. Trying out nested groups and using estimated height
 
 WWDC 2019 has two great sessions that go in depth into the new compositional layout and diffable data source.
 
-Advances in Collection View Layout: https://developer.apple.com/videos/play/wwdc2019/215/
+[Advances in Collection View Layout](https://developer.apple.com/videos/play/wwdc2019/215/)
 
-Advances in UI Data Sources: https://developer.apple.com/videos/play/wwdc2019/220
+[Advances in UI Data Sources](https://developer.apple.com/videos/play/wwdc2019/220)

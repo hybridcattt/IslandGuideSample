@@ -184,8 +184,8 @@ private extension GuideViewController {
             )
         )
         
-        leadingSupplementaryItem.zIndex = 101
-        trailingSupplementaryItem.zIndex = 102
+        leadingSupplementaryItem.zIndex = 101 // has no effect on beta3?
+        trailingSupplementaryItem.zIndex = 102 // has no effect on beta3?
 
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                               heightDimension: .fractionalHeight(1.0))
@@ -195,6 +195,9 @@ private extension GuideViewController {
         let largeItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.4),
                                                    heightDimension: .fractionalHeight(1.0))
         let largeItem = NSCollectionLayoutItem(layoutSize: largeItemSize, supplementaryItems: [])
+
+        //        let largeItem = NSCollectionLayoutItem(layoutSize: largeItemSize, supplementaryItems: [leadingSupplementaryItem, trailingSupplementaryItem])
+        // Specifying supplementary items with same identifiers is not allowed :'(
         
         let groupOf2Size = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.58),
                                                   heightDimension: .fractionalHeight(1.0))

@@ -175,22 +175,14 @@ private extension GuideViewController {
                                               heightDimension: .estimated(40))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
-        
-        let verticalGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                       heightDimension: .fractionalHeight(1.0))
-        let verticalGroup = NSCollectionLayoutGroup.vertical(layoutSize: verticalGroupSize, subitems: [item])
-        verticalGroup.interItemSpacing = .fixed(8)
-        
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                               heightDimension: .absolute(250))
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: verticalGroup, count: 2)
+                                               heightDimension: .estimated(100)) // this value doesn't matter
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
         
         group.interItemSpacing = NSCollectionLayoutSpacing.fixed(10)
         
         let section = NSCollectionLayoutSection(group: group)
-        section.interGroupSpacing = 30
-
-        section.orthogonalScrollingBehavior = .continuousGroupLeadingBoundary
+        section.interGroupSpacing = 10
         
         return section
     }

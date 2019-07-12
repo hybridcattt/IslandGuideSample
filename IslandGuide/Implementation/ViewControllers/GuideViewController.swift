@@ -29,7 +29,7 @@ class GuideViewController: UIViewController {
 
     private(set) var appData: AppData = AppData()
     
-    private var showActivities: Bool = false
+    private var showActivities: Bool = true
     private var shownSections: [GuideSection] = []
     
     override func viewDidLoad() {
@@ -172,18 +172,18 @@ private extension GuideViewController {
     func makeActivitiesSectionDeclaration() -> NSCollectionLayoutSection {
         
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                              heightDimension: .fractionalHeight(1.0))
+                                              heightDimension: .estimated(40))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                               heightDimension: .absolute(100))
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: 2)
+                                               heightDimension: .estimated(100)) // this value doesn't matter
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
         
         group.interItemSpacing = NSCollectionLayoutSpacing.fixed(10)
         
         let section = NSCollectionLayoutSection(group: group)
         section.interGroupSpacing = 10
-
+        
         return section
     }
     

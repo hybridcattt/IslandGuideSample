@@ -125,7 +125,7 @@ private extension GuideViewController {
             case .funActivities:
                 section = sself.makeActivitiesSectionDeclaration()
             case .cuteSeals:
-                section = sself.makeSealsSectionDeclaration()
+                section = sself.makeSealsSectionDeclaration(environment: environment)
             }
             
             section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
@@ -187,13 +187,15 @@ private extension GuideViewController {
         return section
     }
     
-    func makeSealsSectionDeclaration() -> NSCollectionLayoutSection {
+    func makeSealsSectionDeclaration(environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
         
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                               heightDimension: .fractionalHeight(1.0))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
-        let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(150),
+        let width: CGFloat = environment.traitCollection.horizontalSizeClass == .compact ? 150 : 250
+        
+        let groupSize = NSCollectionLayoutSize(widthDimension: .absolute(width),
                                                heightDimension: .absolute(200))
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitem: item, count: 3)
         

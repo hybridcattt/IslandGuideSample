@@ -3,9 +3,11 @@ Demo app for Collection Views workshop @ [Swift Island 2019](https://swiftisland
 
 Created by [Marina Gornostaeva](https://twitter.com/hybridcattt).
 
-During the workshop will go through refactoring of this app from using
-classic UICollectionViewDataSource and UICollectionViewFlowLayout
-into using the new diffable data source and compositional layout.
+During the workshop we went through refactoring of this app from using
+classic `UICollectionViewDataSource` and `UICollectionViewFlowLayout`
+to using the new diffable data source and compositional layout.
+
+The steps below can be checked out from separate branches in this repo.
 
 ### Part 1: Diffable Data Source
 
@@ -22,7 +24,6 @@ into using the new diffable data source and compositional layout.
 - Different layout for different size classes
 - Section inset based on system layout margins
 - Supplementary views, headers
-
 
 ## After the workshop
 

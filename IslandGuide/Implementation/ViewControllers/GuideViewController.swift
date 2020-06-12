@@ -83,7 +83,7 @@ private extension GuideViewController {
     
     func updateSnapshot(animated: Bool = true) {
         
-        let snapshot = NSDiffableDataSourceSnapshot<GuideSection, GuideItem>()
+        var snapshot = NSDiffableDataSourceSnapshot<GuideSection, GuideItem>()
 
         snapshot.appendSections([.coolSpots])
         snapshot.appendItems(appData.coolSpots.map({ GuideItem.coolSpot($0) }))

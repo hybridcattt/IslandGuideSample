@@ -10,7 +10,7 @@ import UIKit
 
 // MARK: - View Controller Lifecycle -
 
-class GuideViewController: UIViewController {
+class GuideViewController: UICollectionViewController {
 
     enum GuideSection: CaseIterable {
         case coolSpots
@@ -24,13 +24,28 @@ class GuideViewController: UIViewController {
         case cuteSeal(Seal)
     }
     
-    private(set) var collectionView: UICollectionView!
+//    private(set) var collectionView: UICollectionView!
     private(set) var dataSource: UICollectionViewDiffableDataSource<GuideSection, GuideItem>! // retain data source!
-
+    private let sectionProvider: SectionProvider
+    
     private(set) var appData: AppData = AppData()
     
     private var showActivities: Bool = true
-    private var shownSections: [GuideSection] = []
+    private(set) var shownSections: [GuideSection] = []
+    
+    init() {
+        let sectionProvider = SectionProvider()
+        self.sectionProvider = sectionProvider
+
+        let layout = GuideViewController.makeCompositionalLayout(s: sectionProvider)
+        super.init(collectionViewLayout: layout)
+        
+        self.sectionProvider.parent = self
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -108,32 +123,11 @@ private extension GuideViewController {
 
 private extension GuideViewController {
 
-    func makeCompositionalLayout() -> UICollectionViewLayout {
+    static func makeCompositionalLayout(s: SectionProvider) -> UICollectionViewLayout {
         let configuration = UICollectionViewCompositionalLayoutConfiguration()
         configuration.interSectionSpacing = 20
         
-        let layout = UICollectionViewCompositionalLayout(sectionProvider: { [weak self] (sectionIndex: Int, environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
-            
-            guard let sself = self else {
-                return nil
-            }
-            
-            let guideSection = sself.shownSections[sectionIndex]
-            
-            let section: NSCollectionLayoutSection
-            switch guideSection {
-            case .coolSpots:
-                section = sself.makeSpotsSectionDeclaration()
-            case .funActivities:
-                section = sself.makeActivitiesSectionDeclaration()
-            case .cuteSeals:
-                section = sself.makeSealsSectionDeclaration(environment: environment)
-            }
-            
-            section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
-            return section
-            
-        }, configuration: configuration)
+        let layout = UICollectionViewCompositionalLayout(sectionProvider: s.closure, configuration: configuration)
         
         return layout
     }
@@ -214,13 +208,13 @@ private extension GuideViewController {
 
 // MARK: - Collection View Delegate -
 
-extension GuideViewController: UICollectionViewDelegate {
+extension GuideViewController {
     
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         cell.contentView.backgroundColor = UIColor.systemGray6
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: false)
     }
 }
@@ -231,20 +225,20 @@ private extension GuideViewController {
     
     func addCollectionView() {
         
-        let layout = makeCompositionalLayout()
-        
-        collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
+//        let layout = makeCompositionalLayout()
+//
+//        collectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .systemBackground
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.alwaysBounceVertical = true
         collectionView.contentInset.top = 20
-        
-        view.addSubview(collectionView)
-        
-        collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        collectionView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+
+//        view.addSubview(collectionView)
+//
+//        collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+//        collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+//        collectionView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+//        collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
     }
     
     func configureCollectionView() {
@@ -263,5 +257,45 @@ private extension GuideViewController {
         let shuffle = UIBarButtonItem(image: UIImage(systemName: "shuffle"), style: .plain, target: self, action: #selector(shuffleButtonPressed(_:)))
         let toggleActivities = UIBarButtonItem(image: UIImage(systemName: "a.circle"),  style: .plain, target: self, action: #selector(aButtonPressed(_:)))
         navigationItem.rightBarButtonItems = [shuffle, toggleActivities]
+    }
+}
+
+// MARK: - UICollectionViewController shenanigans
+
+private extension GuideViewController {
+    
+     final class SectionProvider {
+        
+        weak var parent: GuideViewController?
+        
+        let closure: UICollectionViewCompositionalLayoutSectionProvider
+        
+        init() {
+            weak var delayedSelf: SectionProvider? = nil
+            
+            self.closure = { (sectionIndex: Int, environment: NSCollectionLayoutEnvironment) in
+                
+                guard let sself = delayedSelf?.parent else {
+                    return nil
+                }
+                
+                let guideSection = sself.shownSections[sectionIndex]
+                
+                let section: NSCollectionLayoutSection
+                switch guideSection {
+                case .coolSpots:
+                    section = sself.makeSpotsSectionDeclaration()
+                case .funActivities:
+                    section = sself.makeActivitiesSectionDeclaration()
+                case .cuteSeals:
+                    section = sself.makeSealsSectionDeclaration(environment: environment)
+                }
+                
+                section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 10)
+                return section
+            }
+            
+            delayedSelf = self
+        }
     }
 }

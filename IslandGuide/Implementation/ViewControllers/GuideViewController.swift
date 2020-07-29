@@ -35,16 +35,18 @@ class GuideViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        configureNavigationBar()
+        
         addCollectionView()
         configureCollectionView()
     }
     
-    @IBAction func shuffleButtonPressed(_ sender: Any) {
+    @objc private func shuffleButtonPressed(_ sender: Any) {
         appData.cuteSeals.shuffle()
         updateSnapshot()
     }
     
-    @IBAction func aButtonPressed(_ sender: Any) {
+    @objc private func aButtonPressed(_ sender: Any) {
         showActivities.toggle()
         updateSnapshot()
     }
@@ -253,5 +255,13 @@ private extension GuideViewController {
         
         collectionView.delegate = self // Set delegate before data source !!
         configureDiffableDataSource()
+    }
+    
+    func configureNavigationBar() {
+        title = "Island Guide"
+        navigationItem.largeTitleDisplayMode = .always
+        let shuffle = UIBarButtonItem(image: UIImage(systemName: "shuffle"), style: .plain, target: self, action: #selector(shuffleButtonPressed(_:)))
+        let toggleActivities = UIBarButtonItem(image: UIImage(systemName: "a.circle"),  style: .plain, target: self, action: #selector(aButtonPressed(_:)))
+        navigationItem.rightBarButtonItems = [shuffle, toggleActivities]
     }
 }

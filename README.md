@@ -1,4 +1,18 @@
 # IslandGuideSample
+
+This app was originally created as a demo app for a workshop that I instructed in 2019. 
+
+These days this project is a fully working example of `UICompositionalCollectionViewLayout` 
+and `NSDiffableDataSource` powering a dynamic multi-section collection view. 
+
+I keep referring to this project myself whenever I want to remember how to get the full setup going, 
+or if I hit an obscure bug that shouldn't be happening. 
+
+Feel free to fork the project and make your own changes. 
+If you notice a bug or just code that can be improved, feel free to submit a PR 💛
+
+## About 
+
 Demo app for Collection Views workshop @ [Swift Island 2019](https://swiftisland.nl)
 
 Created by [Marina Gornostaeva](https://twitter.com/hybridcattt).

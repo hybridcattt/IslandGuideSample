@@ -9,7 +9,7 @@ I keep referring to this project myself whenever I want to remember how to get t
 or if I hit an obscure bug that shouldn't be happening. 
 
 Feel free to fork the project and make your own changes. 
-If you notice a bug or just code that can be improved, feel free to submit a PR 💛
+If you notice a bug or just code that can be improved, PRs are welcome 💛
 
 ## About 
 

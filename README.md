@@ -13,9 +13,11 @@ If you notice a bug or just code that can be improved, PRs are welcome 💛
 
 ## About 
 
-Demo app for Collection Views workshop @ [Swift Island 2019](https://swiftisland.nl)
+Demo app for Collection Views workshop @ [Swift Island 2019](https://swiftisland.nl). Slides: [SpeakerDeck](https://speakerdeck.com/hybridcattt/collection-views-diffable-data-sources-and-compositional-layout-workshop-at-swiftisland-2019).
 
 Created by [Marina Gornostaeva](https://twitter.com/hybridcattt).
+
+![the demo](demo.gif)
 
 During the workshop we went through refactoring of this app from using
 classic `UICollectionViewDataSource` and `UICollectionViewFlowLayout`
